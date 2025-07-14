@@ -156,6 +156,28 @@ It makes it easy to:
 
 
 
+```go
+router.Run(":" + port)
+```
+
+🔹 ":" + port
+This part might look weird, so let’s break it down:
+- port is a string variable, e.g. "8000" or "3000"
+- ":" + port becomes ":8000" or ":3000"
+- In Go, this is just string concatenation.
+
+🧠 Why the colon (:)?
+- Because in Go (and most languages), when you start a server, you need to give the address in this format:
 
 
+- ":<port>"
+- The colon means:
+- "Listen on all available IP addresses, on this port."
+
+So this:
+- router.Run(":8000")
+- means:
+
+- “Start the server and listen on http://localhost:8000 (and any network interface).”
+- If you only wrote "8000", it would not work — Go expects the : to know it’s a port.
 
