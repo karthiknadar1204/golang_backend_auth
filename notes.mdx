@@ -1,0 +1,161 @@
+# Go Backend Notes
+
+
+Step 1:
+```bash
+go mod init <github.com/username/repo>
+```
+
+Step 2:
+create the necessary mvc architecture files.
+- controllers
+- database
+- helpers
+- models
+- routes
+In the root,create a file named "main.go"
+
+step 3:
+create models/userModel.go
+✅ Go struct field format
+``` go
+FieldName    FieldType    `Tag`
+```
+so in the database schema,the name of the column is **FieldName** but we pass the parameters using **FieldType** .
+
+
+📁 File name and package
+``` go
+package models
+```
+- This tells Go that this file belongs to the models package.
+- Think of a "package" like a folder that groups similar files.
+- models here means this file defines data structures (called models) used in your app.
+
+📦 Import statements
+``` go
+import(
+	"time"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
+```
+- This part imports code from other places so we can use it.
+- time: Built-in Go package to work with dates and time.
+- primitive: From the MongoDB library. It gives us special types like ObjectID.
+
+👤 The User struct
+``` go
+type User struct {
+    ...
+}
+```
+- type User struct { ... }:
+- This creates a new type called User.
+- A struct is like a blueprint for a user. It holds related data together.
+- Each line inside the {} is a field — like the columns in a database.
+basically schema hai yeh
+
+
+🔑 Fields inside the struct
+Let’s go line-by-line inside the User struct:
+
+
+``` go
+ID primitive.ObjectID `bson:"_id"`
+```
+- ID is a special MongoDB ID type (like a unique identifier).
+- bson:"_id" tells MongoDB to store this as the _id field.
+
+
+``` go
+First_name *string `json:"first_name" validate:"required,min=2,max=100"`
+```
+- First_name is a pointer to a string.
+- *string means it can be nil (optional).
+- json:"first_name" says: "When converting to/from JSON, use the name first_name".
+- validate:"required,min=2,max=100" says:
+- This value is required.
+- It must be at least 2 characters, and no more than 100.
+
+
+
+This pattern continues for other fields like:
+``` go
+Last_name   *string   `json:"last_name" validate:"required,min=2,max=100"`
+Password    *string   `json:"Password" validate:"required,min=6"`
+Email       *string   `json:"email" validate:"email,required"`
+Phone       *string   `json:"phone" validate:"required"`
+```
+- These fields store the user's:
+- Last name
+- Password (at least 6 characters)
+- Email (must be valid)
+
+- Phone number
+
+``` go
+Token *string `json:"token"`
+Refresh_token *string `json:"refresh_token"`
+```
+- These store tokens for login/logout sessions.
+
+``` go
+User_type *string `json:"user_type" validate:"required,eq=ADMIN|eq=USER"`
+```
+- This says what kind of user it is: either ADMIN or USER.
+- The validate rule forces it to be only one of those two.
+
+``` go
+Created_at time.Time `json:"created_at"`
+Updated_at time.Time `json:"updated_at"`
+```
+- These store when the user was created and last updated.
+
+``` go
+User_id string `json:"user_id"`
+```
+- This is another ID field — a plain string version (possibly used internally or for display).
+
+Why we use BSON in Go:
+``` go
+- MongoDB uses BSON internally to store data.
+- In your struct:
+- ID primitive.ObjectID `bson:"_id"`
+- This tells MongoDB:
+- "Save this field as _id in BSON format."
+- It also knows how to encode/decode special MongoDB types like ObjectID and Date
+```
+
+Step 4:
+update main.go file
+
+✅ What is gin-gonic/gin?
+Gin is a popular Go package used to build web servers and APIs, similar to:
+- Express.js in Node.js
+- Flask in Python
+
+It makes it easy to:
+- Handle HTTP requests (like GET, POST)
+- Build routes (/login, /signup)
+- Serve JSON responses
+- Add middleware like logging, validation, etc.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
