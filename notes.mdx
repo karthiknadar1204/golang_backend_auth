@@ -181,3 +181,50 @@ So this:
 - “Start the server and listen on http://localhost:8000 (and any network interface).”
 - If you only wrote "8000", it would not work — Go expects the : to know it’s a port.
 
+
+
+
+
+gin.HandlerFunc
+What is it?
+gin.HandlerFunc is just a type in Go.
+
+In plain English:
+It's a type that represents a function that handles an HTTP request in Gin.
+
+
+
+c *gin.Context is the most important part of Gin — it's the object that represents the current HTTP request and response.
+
+Think of c as:
+
+A special object that lets you get info from the request and write a response.
+
+🔍 What can you do with c?
+What you want to do	How you do it (using c)
+Get URL param like /users/:id	c.Param("id")
+Get query string like ?page=2	c.Query("page")
+Get request body JSON	c.BindJSON(&myStruct)
+Send JSON response	c.JSON(200, gin.H{...})
+Set headers	c.Header("X-Foo", "bar")
+Get cookies	c.Cookie("token")
+Abort request	c.AbortWithStatus(401)
+
+
+
+Why are we using context.WithTimeout?
+Because we want to avoid our app hanging forever if MongoDB (or any external service) becomes slow or unresponsive.
+
+Now suppose:
+
+Your MongoDB server is slow
+
+Or network is broken
+
+Or MongoDB is not responding
+
+Then your app will just wait forever unless you say:
+
+“Hey, if this takes more than X seconds — stop.”
+
+That’s exactly what context.WithTimeout does.
